@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<h1>Payment page
+</h1>
+{% endblock%}
+
+{% block body %}
+{% if total_cost == 0 %}
+    You don't owe me anything, but feel free to give me money if you want!
+{% endif %}
+
+{% if total_cost != 0 %}
+    You owe me £{{ total_cost }} for {{ number_of_journeys }} journeys since {{ first_date }}.
+{% endif %}
+
+<form action="/paid">
+    <input type="submit" value="Pay {{ owner.title() }} now">
+</form>
+<form action="/">
+    <input type="submit" value="Back">
+</form>
+
+{% endblock %}

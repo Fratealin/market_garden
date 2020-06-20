@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<h1>Mileage</h1>
+{% endblock%}
+
+{% block body %}
+<form action="/name_selected" method="post">
+    <select name="name">
+        <!--disabled means the title of dropdown menu-->
+        <option disabled value=""selected>Name</option>
+        <option value="Peter">Peter</option>
+        <option value="Other_Passenger">Other passenger</option>
+    </select>
+
+    <input type="submit" value="Get my total" name="total_or_pay">
+    <input type="submit" value="Pay Zac" name="total_or_pay">
+</form>
+
+<form action="/">
+    <input type="submit" value="Back">
+</form>
+{% endblock%}
+
+</html>

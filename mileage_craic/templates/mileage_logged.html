@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<h1>Your Mileage Has Been Logged</h1>
+{% endblock%}
+
+{% block body %}
+
+<div>Date: {{ logged_voyage[0] }}</div>
+<div>Purpose: {{ logged_voyage[1] }}</div>
+<div>Passengers: {{ logged_voyage[2] }}</div>
+
+<div>Distance: {{ logged_voyage[3] }} miles</div>
+<div>Cost: £{{ logged_voyage[4] }}</div>
+<div>Weather: {{ logged_voyage[5] }}</div>
+
+<form action="/total" method="post">
+    {% if name.lower() == owner %}
+  <select name="name">
+        <!--disabled means the title of dropdown menu-->
+        <option disabled value="name">Name</option>
+
+        <option value="Logged in" selected>{{ name }}Put username here</option>
+        <option value="Peter">Peter</option>
+        <option value="Other_Passenger">Other passenger</option>
+  </select>
+    {% endif %}
+
+  <input type="submit" value="View Total">
+</form>
+
+
+
+
+<form action="/pay">
+    <input type="submit" value="Pay {{ owner.title() }}">
+</form>
+
+<form action="/">
+    <input type="submit" value="Back">
+</form>
+
+
+{% endblock %}

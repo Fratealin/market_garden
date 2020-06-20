@@ -1,0 +1,17 @@
+{
+    "cost_per_mile": 0.42,
+    "weather_url": "https://www.bbc.co.uk/weather/2645006",
+    "owner": "cranberry",
+    "our_veg": [
+        "Aubergine (kg)",
+        "Broad Beans (kg)",
+        "Beetroot (kg)",
+        "Asparagus (250g)"
+    ],
+    "our_prices": [
+        "1.00",
+        "2.00",
+        "9.90",
+        ""
+    ]
+}

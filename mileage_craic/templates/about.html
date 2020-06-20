@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<h1>About Page!</h1>
+<h2>Todo list: </h2>
+<ul>
+    {% for todo in todos %}
+        <li>{{ todo }}</li>
+    {% endfor %}
+    <li>Coffee</li>
+    <li>Tea</li>
+    <li>Onigiri</li>
+</ul>
+
+{% endblock%}

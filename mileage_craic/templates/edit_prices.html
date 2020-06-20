@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Make veg list</h1>
+
+<h2>Todo list: </h2>
+<h3>{{ debug }}</h3>
+
+
+
+<table>
+
+    <form action="/do_edit_prices" method="post">
+
+
+
+
+  <tr>
+    <th>Item</th>
+    <th>Wholesale Price</th>
+    <th>Farm Shop</th>
+      <th>Supermarket</th>
+      <th>Our price</th>
+  </tr>
+    {% for veg in our_veg %}
+  <tr>
+    <td>{{ veg }}</td>
+    <td>{{ prices[our_veg.index(veg)][0] }}</td>
+    <td>{{ prices[our_veg.index(veg)][1] }}</td>
+      <td>{{ prices[our_veg.index(veg)][2] }}</td>
+
+      <td>
+      <input name="updated_prices" placeholder="Please enter our price" type="text" value="{{ prices[our_veg.index(veg)][3] }}">
+      </td>
+  </tr>
+    {% endfor %}
+        <input type="submit" name="edit_prices" value="Edit prices">
+    </form>
+</table>
+
+
+
+<form action="/user_rec" method="post">
+    {% for veg in veg_list %}
+        <label class="checkbox"><input type="checkbox" name="veg" value="{{ veg }}">{{ veg }}</label>
+
+    {% endfor %}
+
+
+    <input type="submit" value="Update list">
+</form>
+
+<form action="/user_rec" method="post">
+    <input name="bespoke_veg" placeholder="Type veg here" type="text">
+    <select name="unit">
+        <!--disabled means the title of dropdown menu-->
+        <option disabled value="" selected>Unit</option>
+        <option value="kg">kg</option>
+        <option value="bunch">Bunch</option>
+        <option value="item">Item</option>
+    </select>
+
+    <input type="submit" name="bespoke_selected" value="Add veg to list">
+</form>
+
+
+
+{% endblock%}

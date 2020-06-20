@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Bye {{ name }}!</h1>
+{% endblock %}
+
+<form action="/pay">
+    <input type="submit" value="Pay {{ owner.title() }}">
+</form>
+
+
+                        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>

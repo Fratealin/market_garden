@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Make veg list</h1>
+
+<h2>What you are selling: </h2>
+<h4>{{ debug }}</h4>
+
+
+<ul>
+    {% for veg in our_veg %}
+        <li>{{ veg }}</li>
+    {% endfor %}
+
+
+
+    <li>Coffee</li>
+    <li>Tea</li>
+    <li>Onigiri</li>
+</ul>
+
+
+<form action="/user_rec" method="post">
+    {% for veg in veg_list %}
+        <label class="checkbox"><input type="checkbox" name="veg" value="{{ veg }}">{{ veg }}</label>
+
+    {% endfor %}
+
+
+    <input type="submit" value="Update list">
+</form>
+
+<form action="/user_rec" method="post">
+    <input name="bespoke_veg" placeholder="Type veg here" type="text">
+    <select name="unit">
+        <!--disabled means the title of dropdown menu-->
+        <option disabled value="" selected>Unit</option>
+        <option value="kg">kg</option>
+        <option value="bunch">Bunch</option>
+        <option value="item">Item</option>
+    </select>
+
+    <input type="submit" name="bespoke_selected" value="Add veg to list">
+</form>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock%}

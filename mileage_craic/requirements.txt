@@ -1,0 +1,9 @@
+flask
+flask_sqlalchemy
+bs4
+requests
+datetime
+flask_wtf
+wtforms
+flask_login
+pillow
