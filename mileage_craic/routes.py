@@ -5,9 +5,11 @@ from flask import url_for
 from flask import redirect
 from flask import flash
 from flask import request
+from flask import session
 from mileage_craic import app, db, bcrypt
 from mileage_craic.login_forms import RegistrationForm, LoginForm
 from mileage_craic.update_account_form import UpdateAccountForm
+from mileage_craic.response_forms import ResponseForm
 import mileage_craic.output_generator
 import datetime
 import json
@@ -281,37 +283,32 @@ def paid():
 def bye():
     return render_template("bye.html")
 
-@app.route("/practice", methods=["GET", "POST"])
-def practice():
+@app.route("/response", methods=["GET", "POST"])
+def response():
     name = current_user.__getattr__(name="username")
-    email = current_user.__getattr__(name="email")
-    password = current_user.__getattr__(name="password")
-    cost_per_mile = current_user.__getattr__(name="cost_per_mile")
-    weather_url = current_user.__getattr__(name="weather_url")
 
-    form = UpdateAccountForm()
+    form = ResponseForm()
+
+    if 'text' in session:
+        new_text = session['text']
+        #session.pop('text', None)
+        #do some computation with string here
+        sorted_charachters = sorted(new_text)
+        sorted_string = "".join(sorted_charachters)
+        form.answer.data = sorted_string.title()
+
     if form.validate_on_submit():
         new_text = form.input_text.data
-        current_user.email = form.email.data
-        current_user.cost_per_mile = form.cost_per_mile.data
-        current_user.weather_url = form.weather_url.data
-        db.session.commit()
-        flash('Your account has been updated!', 'success')
-        return redirect(url_for('practice'), code=307)
+        session['text'] = new_text
 
-    # This populates our form with the current users data
-    elif request.method == 'GET':
-        form.input_text.data = "please type something"
-        form.email.data = current_user.email
-        form.cost_per_mile.data = current_user.cost_per_mile
-        form.weather_url.data = current_user.weather_url
+        return redirect(url_for('response'))
+
 
     # TODO put this back
     image_file = url_for('static', filename='static/' + current_user.image_file)
     image_file = 'static/default.jpg'
 
-    return render_template('practice.html', title='Account', name=name, email=email, image_file=image_file,
-                           cost_per_mile=cost_per_mile, weather_url=weather_url, password=password, form=form)
+    return render_template('response.html', title='Response',  image_file=image_file, name=name, form=form)
 
 
 @app.route("/make_veg_list", methods=["GET", "POST"])
@@ -424,5 +421,39 @@ def do_edit_prices():
 @app.route('/user_rec', methods=["GET",'POST'])
 def user_rec():
     return redirect(url_for('make_veg_list'), code=307)
+
+
+
+@app.route("/numbers", methods=["GET", "POST"])
+def numbers():
+    name = current_user.__getattr__(name="username")
+
+    form = ResponseForm()
+
+    if 'number' in session:
+        new_number = session['number']
+        #deletes the number
+        session.pop('number', None)
+        #do some computation with number here
+        calculation = new_number / 2
+        form.answer.data = calculation
+
+
+
+    if form.validate_on_submit():
+        new_number = form.number.data
+        #saves the number to a session
+        session['number'] = new_number
+
+        return redirect(url_for('numbers'))
+
+
+
+    # TODO put this back
+    image_file = url_for('static', filename='static/' + current_user.image_file)
+    image_file = 'static/default.jpg'
+
+    return render_template('numbers.html', title='Practice',  image_file=image_file, name=name, form=form)
+
 
 
