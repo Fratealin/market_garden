@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+<h1>No Dig Local Organic Fruit and Vegetables</h1>
+{% endblock %}
+
+{% block body %}
+<!-- action means where you want the form to go to-->
+<div class=content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Book Veg Box</legend>
+                <div class="form-group">
+                    {{ form.vegbox_size.label(class="form-control-label") }}
+
+                    {% if form.vegbox_size.errors %}
+                        {{ form.vegbox_size(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.vegbox_size.errors %}
+                                <span>{{ error }}</span>
+
+                            {% endfor%}
+
+                        </div>
+
+                    {% else %}
+                    {{ form.vegbox_size(class="form-control form-control-lg") }}
+                    {% endif %}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form.pickup_time.label(class="form-control-label") }}
+
+                    {% if form.pickup_time.errors %}
+                        {{ form.pickup_time(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.pickup_time.errors %}
+                                <span>{{ error }}</span>
+
+                            {% endfor%}
+
+                        </div>
+
+                    {% else %}
+                    {{ form.pickup_time(class="form-control form-control-lg") }}
+                    {% endif %}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form.input_text.label(class="form-control-label") }}
+                    {% if form.input_text.errors %}
+                        {{ form.input_text(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.input_text.errors %}
+                                <span>{{ error }}</span>
+
+                            {% endfor%}
+
+                        </div>
+
+                    {% else %}
+                    {{ form.input_text(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.submit(class="btn-outline-info") }}
+            </div>
+
+
+
+        </form>
+
+    <div>
+        Farming is a seasonal and unpredictable undertaking. The share will vary from week to week depending on what is looking best in the fields at that time. Fluctuation and variations are inherent in farming (due to seasons, weather, pests, and other unforeseen forces of nature). Picked Farm will, to the best of its ability, provide the freshest, highest quality vegetables possible — however, I understand I am assuming a mutual risk with my farmer, and that I share in the bounty as well as in the risks of agriculture.
+    <br><br>
+Unless the food is delivered to me or my safe delivery spot, I agree to pick up my share at the agreed location and time each week or arrange for it to be picked up by someone else. I understand that if I do not pick up my share it will be donated. I can sell or transfer ownership of my share at any point during the season but there are no refunds.
+    </div>
+    </div>
+
+
+
+
+
+
+
+{% endblock%}

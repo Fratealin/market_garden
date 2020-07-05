@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<div class=content-section">
+
+<h1>About our veg!</h1>
+<h2>Some of our veg: </h2>
+<ul>
+    {% for line in veg_img_dict %}
+    <li class="veg-list"><img class="rounded-circle account-img" src="{{ line['image_file'] }}"/><h3>{{ line['veg'].title() }}</h3><p>{{ line['text'] }}</p></li>
+    {% endfor %}
+
+</ul>
+
+</div>
+
+{% endblock%}
+

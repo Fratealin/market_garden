@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Make veg list</h1>
+
+<h2>Todo list: </h2>
+<h3>{{ debug }}</h3>
+
+
+
+<table>
+
+    <form action="/do_edit_prices" method="post">
+
+
+
+
+  <tr>
+    <th>Item</th>
+    <th>Wholesale Price</th>
+    <th>Farm Shop</th>
+      <th>Supermarket</th>
+      <th>Our price</th>
+  </tr>
+    {% for veg in our_veg %}
+  <tr>
+    <td>{{ veg }}</td>
+    <td>{{ prices[our_veg.index(veg)][0] }}</td>
+    <td>{{ prices[our_veg.index(veg)][1] }}</td>
+      <td>{{ prices[our_veg.index(veg)][2] }}</td>
+
+      <td>
+      <input name="updated_prices" placeholder="Please enter our price" type="text" value="{{ prices[our_veg.index(veg)][3] }}">
+      </td>
+  </tr>
+    {% endfor %}
+        <input type="submit" name="edit_prices" value="Edit prices">
+    </form>
+</table>
+
+
+
+
+
+{% endblock%}

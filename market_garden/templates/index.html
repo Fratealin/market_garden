@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+<h1>No Dig Local Organic Fruit and Vegetables</h1>
+{% endblock %}
+
+{% block body %}
+<!-- action means where you want the form to go to-->
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Book Veg Box</legend>
+                <div class="form-group">
+                    {{ form.vegbox_size.label(class="form-control-label") }}
+
+                    {% if form.vegbox_size.errors %}
+                        {{ form.vegbox_size(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.vegbox_size.errors %}
+                                <span>{{ error }}</span>
+
+                            {% endfor%}
+
+                        </div>
+
+                    {% else %}
+                    {{ form.vegbox_size(class="form-control form-control-lg") }}
+                    {% endif %}
+
+                </div>
+
+
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.register(class="btn-outline-info") }}
+            </div>
+            <div class="form-group">
+                {{ form.login(class="btn-outline-info") }}
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+
+
+
+
+
+{% endblock%}
