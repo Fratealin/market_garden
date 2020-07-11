@@ -31,5 +31,12 @@ class BookingForm(FlaskForm):
     input_text = TextAreaField('Address if delivery is required', render_kw={"placeholder": "Please have money ready on delivery"})
     submit = SubmitField('Place Order Now')
 
+class VegForm(FlaskForm):
+    veg_name = StringField('Produce name', validators =[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    image_file = StringField('Image filename', validators=[DataRequired()])
+    submit = SubmitField('Upload')
+
+
 
 

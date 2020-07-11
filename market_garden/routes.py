@@ -1,4 +1,4 @@
-from market_garden.models import User, Voyage, Veg_model
+from market_garden.models import User, Veg_descriptions, Veg_model
 from flask import render_template
 from flask import request
 from flask import url_for
@@ -6,10 +6,11 @@ from flask import redirect
 from flask import flash
 from flask import request
 from flask import session
+from flask import abort
 from market_garden import app, db, bcrypt
 from market_garden.login_forms import RegistrationForm, LoginForm
 from market_garden.update_account_form import UpdateAccountForm
-from market_garden.order_form import OrderForm, BookingForm
+from market_garden.order_form import OrderForm, BookingForm, VegForm
 from market_garden.contact_forms import ContactForm
 import market_garden.output_generator
 import datetime
@@ -169,15 +170,11 @@ def account():
     name = current_user.__getattr__(name="username")
     email = current_user.__getattr__(name="email")
     password = current_user.__getattr__(name="password")
-    cost_per_mile = current_user.__getattr__(name="cost_per_mile")
-    weather_url = current_user.__getattr__(name="weather_url")
 
     form = UpdateAccountForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.send_email = form.email.data
-        current_user.cost_per_mile = form.cost_per_mile.data
-        current_user.weather_url = form.weather_url.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
@@ -186,8 +183,6 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.send_email
-        form.cost_per_mile.data = current_user.cost_per_mile
-        form.weather_url.data = current_user.weather_url
 
 
     # TODO put this back
@@ -196,7 +191,7 @@ def account():
 
 
     return render_template('account.html', title='Account', name=name, email=email, image_file=image_file,
-                           cost_per_mile=cost_per_mile, weather_url=weather_url,  password=password, form=form)
+                           password=password, form=form)
 
 @app.route("/about")
 @login_required
@@ -214,9 +209,39 @@ def veg():
                    {"veg":"cavolo nero", "image_file":'static/kale.jpg', "text":"Delicious steamed in kale salad, kale smoothies, dahls etc"},
                     {"veg":"shiso", "image_file":'static/shiso.jpeg', "text":"Japanese Herb fantastic in Asian dishes"}]
 
+    veg_descriptions = Veg_descriptions.query.all()
+
+    return render_template('veg.html', title='About our veg', veg_img_dict=veg_img_dict, veg_descriptions=veg_descriptions)
+
+@app.route("/veg/edit", methods=["GET", "POST"])
+def edit_veg():
+    form = VegForm()
+    if form.validate_on_submit():
+        veg_description = Veg_descriptions(veg_name=form.veg_name.data, description = form.description.data, image_file = form.image_file.data, author = current_user.username)
+        db.session.add(veg_description)
+        db.session.commit()
+        flash('New veg description has been created!', 'success')
+        return redirect(url_for('veg'))
+
+    return render_template('edit_veg.html', title='Edit veg', form=form)
+
+@app.route("/veg/edit/<int:veg_id>")
+def veg_update(veg_id):
+    # This displays a page with one veg only
+    veg = Veg_descriptions.query.get_or_404(veg_id)
+    return render_template('veg_update.html', title = veg.veg_name, veg= veg)
+
+@app.route("/veg/edit/<int:veg_id>/update")
+def veg_update_details(veg_id):
+    veg = Veg_descriptions.query.get_or_404(veg_id)
+    if veg.author != current_user:
+        abort(403)
+    form = VegForm()
+    return render_template('edit_veg.html', title='Update veg', form=form)
 
 
-    return render_template('veg.html', title='About our veg', veg_img_dict=veg_img_dict)
+
+
 
 
 @app.route("/log_mileage", methods=["POST"])

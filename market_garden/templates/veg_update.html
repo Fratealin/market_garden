@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<div class=content-section">
+
+<h1>About our veg!</h1>
+<h2>Some of our veg: </h2>
+<ul>
+
+    <li class="veg-list"><img class="rounded-circle account-img" src="static/{{ veg.image_file }}"/><h3><a class="article-content" href="#">{{ veg.veg_name }}</a></h3><p>{{ veg.description }}</p></li>
+
+</ul>
+
+</div>
+
+{% endblock %}

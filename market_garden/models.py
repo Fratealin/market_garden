@@ -50,22 +50,20 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.box_size}', '{self.pickup_time}', '{self.address}')"
 
+
+
 #Voyage class to hold Voyage chronicles.
-class Voyage(db.Model):
+class Veg_descriptions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    voyage_type = db.Column(db.String(100), nullable=False)
-    passengers = db.Column(db.String(100), nullable=False)
-    distance = db.Column(db.Float, nullable=False)
-    cost = db.Column(db.Float, nullable=False)
-    weather_text=db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.String(20), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    veg_name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(100), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    author = db.Column(db.String(20), nullable=False, default='')
 
     # Magic method. Specify repr method: How our object is printed out
     def __repr__(self):
-        return f"Voyage('{self.voyage_type}', '{self.cost}')"
+        return f"Veg('{self.veg_name}', '{self.description}', '{self.image_file}', '{self.author}')"
 
-#Voyage class to hold Voyage chronicles.
 class Veg_model(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     veg_name = db.Column(db.String(100), nullable=False)
