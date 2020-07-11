@@ -409,7 +409,7 @@ def contact():
 
 
 
-    name = current_user.__getattr__(name="username")
+
 
     form = ContactForm()
 
@@ -439,7 +439,7 @@ def contact():
     image_file = url_for('static', filename='static/')
     image_file = 'static/default.jpg'
 
-    return render_template('contact.html', title='Contact',  image_file=image_file, name=name, form=form)
+    return render_template('contact.html', title='Contact',  image_file=image_file, form=form)
 
 
 @app.route("/make_veg_list", methods=["GET", "POST"])
