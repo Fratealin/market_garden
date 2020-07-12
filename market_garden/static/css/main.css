@@ -26,12 +26,9 @@ body {background-image: url('background.jpg');
     color: white;
 }
 
-.bg {
 
 
 
-
-}
 
 h1, h2, h3, h4, h5, h6 {
   color: #222221;
@@ -56,7 +53,11 @@ background: #555555;
   font-weight: 500;
 }
 
-
+#instagram{
+position: absolute;
+right: 0px;
+bottom: 0px;
+}
 
 .content-section {
   background: #555555;
@@ -97,6 +98,8 @@ background: #555555;
     display:inline-block;
     padding: 0;
 }
+
+
 
 
 

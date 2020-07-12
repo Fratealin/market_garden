@@ -214,6 +214,7 @@ def veg():
     return render_template('veg.html', title='About our veg', veg_img_dict=veg_img_dict, veg_descriptions=veg_descriptions)
 
 @app.route("/veg/edit", methods=["GET", "POST"])
+@login_required
 def edit_veg():
     form = VegForm()
     if form.validate_on_submit():
@@ -243,161 +244,12 @@ def veg_update_details(veg_id):
 
 
 
-
-@app.route("/log_mileage", methods=["POST"])
-def log_mileage():
-    distance = request.form.get("distance")
-    name = current_user.username
-    journey_type = request.form.get("journey_type")
-    passengers = request.form.get("passengers")
-
-    if not all([distance, name, passengers]):
-        return render_template("failure.html")
-    if not journey_type:
-        journey_type = "General"
-    try:
-        cost = float(distance)/int(passengers)*current_user.cost_per_mile
-    except ValueError:
-        return render_template("failure.html")
-
-    #2dp
-    cost = "{:.2f}".format(cost)
-
-    # Write it to a db
-    # If you want to do this the consistent way. Watch https://www.youtube.com/watch?v=u0oDDZrDz9U&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=8
-    voyage = Voyage(voyage_type=journey_type, passengers=passengers, distance=distance, cost=cost, weather_text=weather_text, date_posted=date, author=current_user)
-    db.session.add(voyage)
-    db.session.commit()
-    return redirect("/mileage_logged", code=307)
-
-
-    #return render_template("mileage_logged.html", text=text, mydate=mydate, name=name, journey_type=journey_type, passengers= passengers, distance=distance)
-
-
 @app.route("/get_user_name")
 def get_user_name():
     return render_template("get_user_name.html")
 
-@app.route("/name_selected", methods=["POST"])
-def name_selected():
-    button = request.form.get("total_or_pay")
-    if "Pay" in button:
-        return redirect(url_for("pay"), code=307)
-    else:
-        return redirect(url_for("mileage_logged"), code=307)
 
 
-@app.route("/total", methods=["GET", "POST"])
-def total():
-
-    name_selected=request.form.get("name")
-    #print(name_selected)
-
-
-    user_id = current_user.__getattr__(name="id")
-    name = current_user.username
-    owner = market_garden.models.get_json_data("owner")
-
-    total_distance = 0
-    total_cost = 0
-    filtered_journeys = []
-    names = []
-    users = []
-
-    if name == owner:
-        # get list of all names to put onto name select drop down so that the owner can see what everyone owes.
-        names = []
-        users = User.query.all()
-        for this_user in users:
-            names.append(this_user.username.title())
-
-        if not name_selected:
-            voyages = Voyage.query.all()
-
-        else:
-            #case insensitive search
-            user = User.query.filter(func.lower(User.username) == func.lower(name_selected)).first()
-            user_id = user.id
-            voyages = db.session.query(Voyage).filter(Voyage.user_id == user_id).all()
-
-    else:
-        voyages = db.session.query(Voyage).filter(Voyage.user_id == user_id).all()
-    for voyage in voyages:
-        filtered_journeys.append(
-            [voyage.date_posted, voyage.author.username, voyage.voyage_type, voyage.passengers, voyage.distance,
-             voyage.cost, voyage.weather_text])
-        total_distance += float(voyage.distance)
-        total_cost += round(float(voyage.cost), 3)
-
-    total_cost = "{:.2f}".format(total_cost)
-    return render_template("total.html", mydate=date, filtered_journeys=filtered_journeys,
-                           total_distance=total_distance, total_cost=total_cost, voyages=voyages, owner=owner,
-                           name=name, names=names, users=users)
-
-
-@app.route("/mileage_logged", methods=["GET", "POST"])
-def mileage_logged():
-    user_id = current_user.__getattr__(name="id")
-    name_selected=request.form.get("name")
-
-    name = current_user.username
-    owner = market_garden.models.get_json_data("owner")
-    total_distance = 0
-    total_cost = 0
-
-    voyages = db.session.query(Voyage).filter(Voyage.user_id == user_id).all()
-    filtered_journeys = []
-    for voyage in voyages:
-        filtered_journeys.append([voyage.date_posted, voyage.author.username, voyage.voyage_type, voyage.passengers, voyage.distance, voyage.cost, voyage.weather_text])
-        total_distance += float(voyage.distance)
-        total_cost += round(float(voyage.cost), 3)
-    voyage = voyages[-1]
-
-    filtered_journeys = [[voyage.date_posted, voyage.author.username, voyage.voyage_type, voyage.passengers, voyage.distance, voyage.cost, voyage.weather_text]]
-    last_voyage = voyages[-1]
-    logged_voyage = [voyage.date_posted, voyage.voyage_type, voyage.passengers, voyage.distance, voyage.cost, voyage.weather_text]
-    total_cost = "{:.2f}".format(total_cost)
-    #print(total_cost, filtered_journeys)
-    return render_template("mileage_logged.html", mydate=date, filtered_journeys=filtered_journeys, total_distance=total_distance, total_cost=total_cost, voyages=voyages, owner=owner, name=name, logged_voyage=logged_voyage)
-
-
-@app.route("/pay")
-def pay():
-    owner = market_garden.models.get_json_data("owner")
-
-    user_id = current_user.id
-    voyages = db.session.query(Voyage).filter(Voyage.user_id == user_id).all()
-
-
-
-    total_cost = 0
-    first_date = ""
-    #I don't know how to put the calculation into a function, as this calculation returns three values
-    if len(voyages) == 0:
-        pass
-    else:
-        first_date = voyages[0].date_posted
-        for voyage in voyages:
-            total_cost += float(voyage.cost)
-
-        total_cost = "{:.2f}".format(total_cost)
-
-    return render_template("pay.html", total_cost=total_cost, number_of_journeys=len(voyages), first_date=first_date, owner=owner)
-
-
-@app.route("/paid")
-def paid():
-    # Don't know if this is good practice. But it worked!
-    user_id = current_user.id
-    voyages = db.session.query(Voyage).filter(Voyage.user_id == user_id).all()
-    for voyage in voyages:
-        db.session.delete(voyage)
-        db.session.commit()
-
-    #TODO: clear debts from database
-    #(equivalent of the now-removed "zero_csv()" function)
-
-    return render_template("paid.html")
 
 @app.route("/bye")
 def bye():
@@ -576,38 +428,5 @@ def weather():
 @app.route('/user_rec', methods=["GET",'POST'])
 def user_rec():
     return redirect(url_for('make_veg_list'), code=307)
-
-
-
-@app.route("/numbers", methods=["GET", "POST"])
-def numbers():
-    name = current_user.__getattr__(name="username")
-
-    form = ContactForm()
-
-    if 'number' in session:
-        new_number = session['number']
-        #deletes the number
-        session.pop('number', None)
-        #do some computation with number here
-        calculation = new_number / 2
-        form.answer.data = calculation
-
-
-
-    if form.validate_on_submit():
-        new_number = form.number.data
-        #saves the number to a session
-        session['number'] = new_number
-        return redirect(url_for('numbers'))
-
-
-
-    # TODO put this back
-    image_file = url_for('static', filename='static/' + current_user.image_file)
-    image_file = 'static/default.jpg'
-
-    return render_template('numbers.html', title='Practice',  image_file=image_file, name=name, form=form)
-
 
 
